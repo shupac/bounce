@@ -63,14 +63,12 @@ BouncyDancer.prototype.setPosition = function(top, left){
     top: top,
     left: left
   };
-  // this.$node.animate(styleSettings, 1);
   this.$node.css(styleSettings);
 };
 
 BouncyDancer.prototype.reflect = function(peg) {
-  var pegX = peg[0];
-  var pegY = peg[1];
-  var pegZ = peg[2];
+  var pegX = peg.x;
+  var pegY = peg.y;
   var nScalar = PegArr.prototype.distance(pegX, pegY, this.left, this.top);
   var nUnitX = (pegX - this.left)/nScalar;
   var nUnitY = (pegY - this.top)/nScalar;
@@ -84,4 +82,4 @@ BouncyDancer.prototype.reflect = function(peg) {
   this.horizontal = newDX;
   this.vertical = newDY;
   this.direction = Math.atan(this.vertical/this.horizontal);
-}
+};

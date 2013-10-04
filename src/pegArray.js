@@ -4,9 +4,9 @@ var PegArr = function() {
 
 PegArr.prototype.free = function(objX, objY, objR) {
   for(var i = 0; i < this.pegArr.length; i++) {
-    var pegX = this.pegArr[i][0];
-    var pegY = this.pegArr[i][1];
-    var pegR = this.pegArr[i][2];
+    var pegX = this.pegArr[i].x;
+    var pegY = this.pegArr[i].y;
+    var pegR = this.pegArr[i].radius;
 
     if(this.distance(pegX, pegY, objX, objY) < pegR + objR) {
       return this.pegArr[i];
@@ -16,20 +16,10 @@ PegArr.prototype.free = function(objX, objY, objR) {
 };
 
 PegArr.prototype.add = function(x1, y1, x2, y2) {
-  var radius = this.distance(x1, y1, x2, y2);
-  var pegNode = $('<span class="peg"></span>');
-  pegNode.data("index", this.pegArr.length);
-  this.pegArr.push([x1, y1, radius, pegNode]);
-
-  var styleSettings = {
-    'top': y1-radius,
-    'left': x1-radius,
-    'border-width':radius,
-    'border-radius':radius,
-    'position':'absolute'
-  };
-  pegNode.css(styleSettings);
-  return pegNode;
+  var peg = new Peg(x1, y1, x2, y2);
+  peg.pegNode.data("index", this.pegArr.length);
+  this.pegArr.push(peg);
+  return peg.pegNode;
 };
 
 PegArr.prototype.distance = function(x1, y1, x2, y2) {
@@ -37,7 +27,7 @@ PegArr.prototype.distance = function(x1, y1, x2, y2) {
 };
 
 PegArr.prototype.lastNode = function() {
-  if(this.pegArr.length) return this.pegArr.pop()[3];
+  if(this.pegArr.length) return this.pegArr.pop().pegNode;
 };
 
 PegArr.prototype.get = function(i) {

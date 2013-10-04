@@ -4,27 +4,14 @@ var Peg = function(x1, y1, x2, y2) {
   this.radius = this.distance(x1, y1, x2, y2);
   this.pegNode = $('<span class="peg"></span>');
   var styleSettings = {
-    'top': y1-radius,
-    'left': x1-radius,
-    'border-width':radius,
-    'border-radius':radius,
+    'top': y1-this.radius,
+    'left': x1-this.radius,
+    'border-width':this.radius,
+    'border-radius':this.radius,
     'position':'absolute'
   };
-  pegNode.css(styleSettings);
-  return pegNode;
-};
-
-Peg.prototype.free = function(objX, objY, objR) {
-  for(var i = 0; i < this.pegArr.length; i++) {
-    var pegX = this.pegArr[i][0];
-    var pegY = this.pegArr[i][1];
-    var pegR = this.pegArr[i][2];
-
-    if(this.distance(pegX, pegY, objX, objY) < pegR + objR) {
-      return this.pegArr[i];
-    }
-  }
-  return true;
+  this.pegNode.css(styleSettings);
+  // return pegNode;
 };
 
 Peg.prototype.distance = function(x1, y1, x2, y2) {
