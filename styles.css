@@ -1,0 +1,71 @@
+body, html{
+  height:100%;
+}
+body{
+  margin: 0px;
+  background-color:#444;
+  font-size: 18px;
+}
+body, a:link, a:visited, a:active{
+  color: lightblue;
+}
+.title, .addDancerButton, .lineup{
+  padding:5px 12px;
+  float:right;
+}
+.topbar{
+  height:32px;
+  background-color: #555;
+}
+.title{
+  background-color: #777;
+}
+.dancer{
+  border:10px solid red;
+  border-radius:10px;
+  position:absolute;
+}
+.peg{
+  border-color:red;
+  border-style:solid;
+  /*border-radius: 50px;*/
+  position:absolute;
+}
+.yellow{
+  border:10px solid yellow;
+  border-radius:10px;
+  position:absolute;
+}
+.color{
+  border:10px solid white;
+  border-radius:20px;
+  position:absolute;
+  border-color: #C30;
+  animation-name: homeCycle;
+  animation-duration:6s;
+  /*animation-direction:alternate;*/
+  animation-iteration-count:infinite;
+
+  -webkit-animation-name: homeCycle;
+  -webkit-animation-duration:6s;
+  /*-webkit-animation-direction:alternate;*/
+  -webkit-animation-iteration-count:infinite; }
+
+  @keyframes homeCycle
+  {
+  0% {border-color: blue;}
+  20% {border-color: green;}
+  40% {border-color: yellow;}
+  75% {border-color: red;}
+  100% {border-color: blue;}
+  }
+
+  @-webkit-keyframes homeCycle
+  {
+  0% {border-color: blue;}
+  25% {border-color: green;}
+  50% {border-color: yellow;}
+  75% {border-color: red;}
+  100% {border-color: blue;}
+  }
+}
