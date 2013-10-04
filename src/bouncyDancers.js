@@ -1,5 +1,5 @@
-var BouncyDancer = function(top, left, timeBetweenSteps){
-  Dancer.call(this, top, left, timeBetweenSteps);
+var BouncyDancer = function(top, left){
+  Dancer.call(this, top, left);
   this.$node.addClass('yellow');
   this.$node.addClass('movers');
   this.direction = Math.random()*2*Math.PI;
@@ -71,7 +71,7 @@ BouncyDancer.prototype.reflect = function(peg) {
   var pegX = peg[0];
   var pegY = peg[1];
   var pegZ = peg[2];
-  var nScalar = Peg.prototype.distance(pegX, pegY, this.left, this.top);
+  var nScalar = PegArr.prototype.distance(pegX, pegY, this.left, this.top);
   var nUnitX = (pegX - this.left)/nScalar;
   var nUnitY = (pegY - this.top)/nScalar;
   var a = -this.horizontal*nUnitX - this.vertical*nUnitY;
