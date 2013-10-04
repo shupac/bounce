@@ -40,7 +40,7 @@
     }
   };
 
-  var dragEvent = function() {
+  var clickEvent = function() {
     var startX, startY, endX, endY;
     $('body').on('mousedown', function(event){
       if(event.pageY > 32 && event.which === 1) {
@@ -60,6 +60,12 @@
         $('body').append(newPeg);
       }
     });
+    $('body').on('click', '.peg', function() {
+      var pegIndex = $(this).data('index');
+      var peg = pegs.get(pegIndex);
+      console.log(peg[0], peg[1]);
+    });
+
   };
 
 
@@ -68,7 +74,6 @@
     window.pegs = new PegArr();
 
     $('.addDancers').on('click', function(){
-      // debugger;
       for(var i = 0; i < $('.numDancers').val(); i++) {
         var dancer = new BouncyDancer(
           ($("body").height()-52) * Math.random()+32,
@@ -98,7 +103,8 @@
     });
 
 
-    dragEvent();
+
+    clickEvent();
 
   });
 </script>
