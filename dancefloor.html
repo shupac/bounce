@@ -43,10 +43,21 @@
 
   var clickEvent = function() {
     var startX, startY, endX, endY;
-    $('body').on('click', '.peg', function() {
+    $('body').on('mousedown', '.peg', function() {
+      startX = event.pageX;
+      startY = event.pageY;
       var pegIndex = $(this).data('index');
       var peg = pegs.get(pegIndex);
-      console.log(peg.x, peg.y);
+      console.log(startX, startY);
+      $(this).on('mousemove', function(click) {
+        if(click.which === 1) {
+          var displX = event.pageX - startX;
+          var displY = event.pageY - startY;
+          if(Math.abs(displX) > 5 || Math.abs(displY) > 5) {
+            peg.setPosition(event.pageX, event.pageY);
+          }
+        }
+      });
     });
     $('div').not($('div .peg')).on('mousedown', function(event){
       if(event.pageY > 32 && event.which === 1) {
@@ -60,10 +71,10 @@
         endY = event.pageY;
         if(Math.abs(startX - endX) > 5 || Math.abs(startY - endY) > 5) {
           var newPeg = pegs.add(startX, startY, endX, endY);
+          $('body').append(newPeg);
         } else {
           explode(endX, endY);
         }
-        $('body').append(newPeg);
       }
     });
 
@@ -95,14 +106,14 @@
       }
     });
 
-    $(document).keydown(function(e){
+    $('body').keydown(function(e){
       if(e.shiftKey) explode();
-      if(e.which === 90) {
+      if((e.metaKey || e.ctrlKey) && e.which === 90) {
+        console.log(e.which);
         var lastPegNode = pegs.lastNode();
-        if(lastPegNode) lastPegNode.toggle();
+        if(lastPegNode) lastPegNode.remove();
       }
     });
-
 
 
     clickEvent();
