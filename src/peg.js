@@ -1,33 +1,21 @@
 var Peg = function(x1, y1, x2, y2) {
-  this.x = x1;
-  this.y = y1;
-  this.radius = this.distance(x1, y1, x2, y2);
-  this.pegNode = $('<span class="peg"></span>');
-  this.setCSS();
-  // return pegNode;
+  Circle.call(this, x1, y1, distance(x1, y1, x2, y2));
+  this.$node.addClass('peg');
 };
 
-Peg.prototype.distance = function(x1, y1, x2, y2) {
-  return Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2));
-};
+Peg.prototype = Object.create(Circle.prototype);
 
-Peg.prototype.node = function() {
-  return this.pegNode;
-};
+Peg.prototype.constructor = Peg;
 
 Peg.prototype.setPosition = function(x, y) {
-  this.x = x;
-  this.y = y;
-  this.setCSS();
-}
-
-Peg.prototype.setCSS = function() {
-  var styleSettings = {
-    'top': this.y-this.radius,
-    'left': this.x-this.radius,
-    'border-width':this.radius,
-    'border-radius':this.radius,
-    'position':'absolute'
-  };
-  this.pegNode.css(styleSettings);
-}
+  Circle.prototype.setPosition.call(this, x, y);
+  for(var i = 0; i < balls.length; i++) {
+    var ball = balls[i];
+    if(distance(x, y, ball.x, ball.y) < ball.radius + this.radius) {
+      var nScalar = distance(x, y, ball.x, ball.y);
+      var nUnitX = (x - ball.x)/nScalar;
+      var nUnitY = (y - ball.y)/nScalar;
+      ball.setPosition(x - (this.radius+ball.radius)*nUnitX, y - (this.radius+ball.radius)*nUnitY);
+    }
+  }
+};

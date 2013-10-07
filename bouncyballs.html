@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bouncy Balls</title>
+  <link rel="stylesheet" type="text/css" href="styles.css" />
+  <script src="lib/jquery.js"></script>
+  <script src="src/circle.js"></script>
+  <script src="src/ball.js"></script>
+  <script src="src/peg.js"></script>
+  <script src="src/pegArray.js"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="#" class="left lineup">Lineup</a>
+  <span class='right'>
+    Add balls: <input class="numBalls" type="text" size="2" value="10"></input>
+    <button type="button" class='addBalls'>Add Balls</button>
+  </span>
+</div>
+<div class="main"></div>
+<script>
+  var height = $('body').height();
+  var width = $('body').width();
+
+  var distance = function(x1, y1, x2, y2) {
+    return Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2));
+  };
+
+  var addBalls = function(n) {
+    n = n || 10;
+    for(var i = 0; i < n; i++) {
+      var ball = new BouncyBall(
+        ($("body").width()-20) * Math.random(),
+        ($("body").height()-52) * Math.random()+32
+      );
+      balls.push(ball);
+    }
+    showBalls();
+  }
+
+  var showBalls = function() {
+    for(var i = 0; i < balls.length; i++) {
+      $('body').append(balls[i].$node);
+    }
+  };
+
+  var explode = function(x, y) {
+    x = x || width/2;
+    y = y || height/2;
+    for(var i = 0; i < balls.length; i++) {
+      balls[i].randDir();
+      balls[i].setPosition(x, y);
+      if(!balls[i].moving) {
+        balls[i].startMoving();
+      }
+    }
+  };
+
+  var lineup = function() {
+    var space = 1;
+    var size = 20;
+    for(var i = 0; i < balls.length; i++) {
+      var column = Math.floor(i/space);
+      balls[i].setPosition(width/2 - balls.length*10 + column * size, height/2+ i % space * size);
+      balls[i].stopMoving();
+    }
+  };
+
+  var clickEvent = function() {
+    var startX, startY, endX, endY;
+    $('div').not($('div .peg')).on('mousedown', function(event){
+      if(event.pageY > 32 && event.which === 1) {
+          startX = event.pageX;
+          startY = event.pageY;
+        }
+    });
+    $('div').not($('div .peg')).on('mouseup', function(){
+      if(event.pageY > 32 && event.which === 1) {
+        endX = event.pageX;
+        endY = event.pageY;
+        if(Math.abs(startX - endX) > 5 || Math.abs(startY - endY) > 5) {
+          var newPeg = pegs.add(startX, startY, endX, endY);
+          $('body').append(newPeg);
+        } else {
+          explode(endX, endY);
+        }
+      }
+    });
+    $('body').on('mousedown', '.peg', function() {
+      var pegIndex = $(this).data('index');
+      var peg = pegs.get(pegIndex);
+      $(this).on('mousemove', function(click) {
+        if(click.which === 1) {
+          var displX = event.pageX - startX;
+          var displY = event.pageY - startY;
+          if(Math.abs(displX) > 5 || Math.abs(displY) > 5) {
+            peg.setPosition(event.pageX, event.pageY);
+          }
+        }
+      });
+    });
+  };
+
+  $(document).ready(function(){
+    window.balls = [];
+    window.pegs = new PegArr();
+
+    $('.addBalls').on('click', function(){
+      addBalls($('.numBalls').val());
+    })
+
+    $('.lineup').on('click', lineup);
+
+    $('body').keydown(function(e){
+      if(e.shiftKey) explode();
+      if(e.which === 76) lineup();
+      if(e.which === 65) addBalls();
+      if((e.metaKey || e.ctrlKey) && e.which === 90) {
+        var lastPegNode = pegs.lastNode();
+        if(lastPegNode) lastPegNode.remove();
+      }
+    });
+
+    clickEvent();
+
+  });
+</script>
+
+</body>
+</html>
