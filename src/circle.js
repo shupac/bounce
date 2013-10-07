@@ -1,6 +1,6 @@
 var Circle = function(x, y, radius) {
   this.radius = radius || 10;
-  this.$node = $('<span></span>');
+  this.$node = $('<div></div>');
   this.setPosition(x, y);
 };
 

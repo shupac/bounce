@@ -8,6 +8,7 @@ body, .main, html{
 a:link, a:visited, a:active{
   color: lightblue;
   text-decoration: none;
+  margin-right: 20px;
 }
 
 .topbar{
@@ -15,16 +16,26 @@ a:link, a:visited, a:active{
   background-color: black;
   color: lightblue;
   padding:0 50px;
-}
-.right {
-  float:right;
-  margin-top: 5px;
-}
-.left{
-  float:left;
-  margin-top: 5px;
+  text-align: center;
+  margin: 0 auto;
 }
 
+.groupLeft {
+  float: left;
+}
+
+.groupRight {
+  float: right;
+}
+
+.groupCenter {
+  position: relative;
+  top: 5px;
+}
+
+.groupLeft, .groupRight {
+  margin-top: 5px;
+}
 
 .ball{
   border-color: black;
@@ -36,4 +47,31 @@ a:link, a:visited, a:active{
   border-color:red;
   border-style:solid;
   position:absolute;
+}
+
+.mask {
+  min-height: 100%;
+  min-width: 100%;
+  background-color: black;
+  opacity: 0;
+  z-index: 2;
+  position: absolute;
+  top: 0;
+}
+
+.popup {
+  position: absolute;
+  top: 0;
+  z-index: 3;
+  opacity: 0;
+  background-color: white;
+  color: black;
+  top: 50%;
+  left: 50%;
+  width: 500px;
+  height: 350px;
+  margin-left: -250px; 
+  margin-top: -175px;
+  border: 10px solid red;
+  border-radius: 20px;
 }

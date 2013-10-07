@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bouncy Balls</title>
+  <title>Bouncy Balls Demo</title>
   <link rel="stylesheet" type="text/css" href="styles.css" />
   <script src="lib/jquery.js"></script>
   <script src="src/circle.js"></script>
@@ -12,16 +12,39 @@
 <body>
 
 <div class="topbar">
-  <a href="#" class="left lineup">Lineup</a>
-  <span class='right'>
-    Add balls: <input class="numBalls" type="text" size="2" value="10"></input>
+  <div class='groupLeft'>
+    <a href="#" class="lineup">Lineup</a>
+    <a href="#" class="clear">Clear</a>
+  </div>
+  <span class='groupCenter'>Number of Balls: <span class='numBalls'>0</span></span>
+  <div class='groupRight'>
+    <a href="#" class="startStop">Stop</a>
+    Add balls: <input class="numAddBalls" type="text" size="2" value="10"></input>
     <button type="button" class='addBalls'>Add Balls</button>
-  </span>
+  </div>
 </div>
 <div class="main"></div>
+<!-- 
+<div class="popup">
+  <ul>
+    <li>Click and drag on empty white space to draw a peg.</li>
+    <li>Click and drag on pegs to move them.</li>
+    <li>Click on empty space to explode the balls.</li>
+    <br/>
+    <li>&#8984;+Z to delete the last peg</li>
+    <li>Shift to explode the balls from the center.</li>
+    <li>S to start/stop ball movement.</li>
+    <li>L to line up the balls.</li>
+    <li>A to add 10 balls.</li>
+    <li>C to clear all balls.</li>
+    <li>Esc to bring up this menu</li>
+  </ul>
+</div>
+ -->
 <script>
   var height = $('body').height();
   var width = $('body').width();
+  var moving = false;
 
   var distance = function(x1, y1, x2, y2) {
     return Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2));
@@ -36,7 +59,11 @@
       );
       balls.push(ball);
     }
+    $('.numBalls').text(balls.length);
     showBalls();
+    startMoving();
+    moving = true;
+    $('.startStop').text('Stop');
   }
 
   var showBalls = function() {
@@ -45,16 +72,25 @@
     }
   };
 
+  var clearBalls = function() {
+    $('.ball').remove();
+    balls = [];
+    $('.numBalls').text(balls.length);
+  }
+
   var explode = function(x, y) {
     x = x || width/2;
-    y = y || height/2;
+    y = y || height/2 + 16;
+    var angle = 2*Math.PI/balls.length;
     for(var i = 0; i < balls.length; i++) {
-      balls[i].randDir();
       balls[i].setPosition(x, y);
+      balls[i].setDirection(angle*i);
       if(!balls[i].moving) {
         balls[i].startMoving();
       }
     }
+    moving = true;
+    $('.startStop').text('Stop');
   };
 
   var lineup = function() {
@@ -64,7 +100,34 @@
       var column = Math.floor(i/space);
       balls[i].setPosition(width/2 - balls.length*10 + column * size, height/2+ i % space * size);
       balls[i].stopMoving();
+      moving = false;
+      $('.startStop').text('Start');
     }
+  };
+
+  var startMoving = function() {
+    for(var i = 0; i < balls.length; i++) {
+      if(!balls[i].moving) {
+        balls[i].startMoving();
+      }
+    }
+    moving = true;
+    $('.startStop').text('Stop');
+  };
+
+  var stopMoving = function() {
+    for(var i = 0; i < balls.length; i++) {
+      if(balls[i].moving) {
+        balls[i].stopMoving();
+      }
+    }
+    moving = false;
+    $('.startStop').text('Start');
+  };
+
+  var startStop = function() {
+    if(moving) stopMoving();
+    else startMoving();
   };
 
   var clickEvent = function() {
@@ -88,6 +151,8 @@
       }
     });
     $('body').on('mousedown', '.peg', function() {
+      startX = event.pageX;
+      startY = event.pageY;
       var pegIndex = $(this).data('index');
       var peg = pegs.get(pegIndex);
       $(this).on('mousemove', function(click) {
@@ -107,22 +172,35 @@
     window.pegs = new PegArr();
 
     $('.addBalls').on('click', function(){
-      addBalls($('.numBalls').val());
+      addBalls($('.numAddBalls').val());
     })
+
+    $('.clear').on('click', clearBalls);
 
     $('.lineup').on('click', lineup);
 
+    $('.startStop').on('click', startStop);
+
     $('body').keydown(function(e){
-      if(e.shiftKey) explode();
-      if(e.which === 76) lineup();
-      if(e.which === 65) addBalls();
+      if(e.shiftKey) explode();         // shift key
+      if(e.which === 76) lineup();      // l key
+      if(e.which === 65) addBalls();    // a key
+      if(e.which === 67) clearBalls();  // c key
+      if(e.which === 83) startStop();  // s key
       if((e.metaKey || e.ctrlKey) && e.which === 90) {
         var lastPegNode = pegs.lastNode();
-        if(lastPegNode) lastPegNode.remove();
+        if(lastPegNode) lastPegNode.remove(); // ctrl + z or cmd + z
       }
     });
 
     clickEvent();
+    $('body').append(pegs.add(width/2, height/2+15, width/2, height/2 + 150));
+    addBalls(40);
+    explode(width/2, height/2+150);
+    setTimeout(function() {
+      pegs.get(0).setPosition(width/2, height/2+15);
+    }, 3000);
+
 
   });
 </script>

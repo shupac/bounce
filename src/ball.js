@@ -5,23 +5,24 @@ var BouncyBall = function(x, y){
   this.$node.addClass('ball');
   this.speed = 3;
 
-  this.randDir();
-
-  var scheduleMove = this.move.bind(this);
-  this.scheduleID = setInterval(function() {
-    scheduleMove();
-  }, moveInterval);
-  this.moving = true;
+  this.setDirection(Math.random()*2*Math.PI);
+  this.moving = false;
 };
 
 BouncyBall.prototype = Object.create(Circle.prototype);
 BouncyBall.prototype.constructor = BouncyBall;
 
-BouncyBall.prototype.randDir = function() {
-  this.direction = Math.random()*2*Math.PI;
+// BouncyBall.prototype.randDir = function() {
+//   this.direction = Math.random()*2*Math.PI;
+//   this.horizontal = this.speed * Math.cos(this.direction);
+//   this.vertical = this.speed * Math.sin(this.direction);
+// };
+
+BouncyBall.prototype.setDirection = function(direction) {
+  this.direction = direction;
   this.horizontal = this.speed * Math.cos(this.direction);
   this.vertical = this.speed * Math.sin(this.direction);
-};
+}
 
 BouncyBall.prototype.move = function() {
   var newX = this.x + this.horizontal;
@@ -33,11 +34,11 @@ BouncyBall.prototype.move = function() {
     this.reflect(newPosFree);
   }
 
-  if(newX + 2 * this.radius > width || newX < 0) {
+  if(newX + this.radius > width || newX - this.radius < 0) {
     this.horizontal *= -1;
     this.direction = Math.atan(this.vertical/this.horizontal);
   }
-  if(newY + 2*this.radius > height || newY < 32) {
+  if(newY + this.radius > height || newY - this.radius < 32) {
     this.vertical *= -1;
     this.direction = Math.atan(this.vertical/this.horizontal);
   }
