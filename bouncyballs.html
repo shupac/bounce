@@ -130,42 +130,42 @@
     else startMoving();
   };
 
-  var clickEvent = function() {
-    var startX, startY, endX, endY;
-    $('div').not($('div .peg')).on('mousedown', function(event){
-      if(event.pageY > 32 && event.which === 1) {
-          startX = event.pageX;
-          startY = event.pageY;
-        }
-    });
-    $('div').not($('div .peg')).on('mouseup', function(){
-      if(event.pageY > 32 && event.which === 1) {
-        endX = event.pageX;
-        endY = event.pageY;
-        if(Math.abs(startX - endX) > 5 || Math.abs(startY - endY) > 5) {
-          var newPeg = pegs.add(startX, startY, endX, endY);
-          $('body').append(newPeg);
-        } else {
-          explode(endX, endY);
-        }
-      }
-    });
-    $('body').on('mousedown', '.peg', function() {
-      startX = event.pageX;
-      startY = event.pageY;
-      var pegIndex = $(this).data('index');
-      var peg = pegs.get(pegIndex);
-      $(this).on('mousemove', function(click) {
-        if(click.which === 1) {
-          var displX = event.pageX - startX;
-          var displY = event.pageY - startY;
-          if(Math.abs(displX) > 5 || Math.abs(displY) > 5) {
-            peg.setPosition(event.pageX, event.pageY);
-          }
-        }
-      });
-    });
-  };
+  // var clickEvent = function() {
+  //   var startX, startY, endX, endY;
+  //   $('div').not($('div .peg')).on('mousedown', function(event){
+  //     if(event.pageY > 32 && event.which === 1) {
+  //         startX = event.pageX;
+  //         startY = event.pageY;
+  //       }
+  //   });
+  //   $('div').not($('div .peg')).on('mouseup', function(){
+  //     if(event.pageY > 32 && event.which === 1) {
+  //       endX = event.pageX;
+  //       endY = event.pageY;
+  //       if(Math.abs(startX - endX) > 5 || Math.abs(startY - endY) > 5) {
+  //         var newPeg = pegs.add(startX, startY, endX, endY);
+  //         $('body').append(newPeg);
+  //       } else {
+  //         explode(endX, endY);
+  //       }
+  //     }
+  //   });
+  //   $('body').on('mousedown', '.peg', function() {
+  //     startX = event.pageX;
+  //     startY = event.pageY;
+  //     var pegIndex = $(this).data('index');
+  //     var peg = pegs.get(pegIndex);
+  //     $(this).on('mousemove', function(click) {
+  //       if(click.which === 1) {
+  //         var displX = event.pageX - startX;
+  //         var displY = event.pageY - startY;
+  //         if(Math.abs(displX) > 5 || Math.abs(displY) > 5) {
+  //           peg.setPosition(event.pageX, event.pageY);
+  //         }
+  //       }
+  //     });
+  //   });
+  // };
 
   $(document).ready(function(){
     window.balls = [];
@@ -193,10 +193,44 @@
       }
     });
 
-    clickEvent();
+
+
+    $('body').on('click', '.peg', function() {
+      console.log('okay');
+    });
+
+
+    // draw
+    // var drawListener = function() {
+      var startX, startY, endX, endY;
+      var drawPeg = false;
+      $('body').on('mousedown', ':not(.peg)', function(event) {
+        console.log('click');
+        startX = event.pageX;
+        startY = event.pageY;
+        if(startY > 32) drawPeg = true;
+      });
+      $('body').on('mouseup', function(event) {
+        endX = event.pageX;
+        endY = event.pageY;
+        if((Math.abs(startX - endX) > 5 || Math.abs(startY - endY) > 5) && drawPeg) {
+          var newPeg = pegs.add(startX, startY, endX, endY);
+          $('body').append(newPeg);
+        } else {
+          explode(endX, endY);
+        }
+        drawPeg = false;
+      });
+    // };
+
+    // drawListener();
+
+
     $('body').append(pegs.add(width/2, height/2+15, width/2, height/2 + 150));
-    addBalls(40);
-    explode(width/2, height/2+150);
+
+
+    // addBalls(40);
+    // explode(width/2, height/2+150);
     setTimeout(function() {
       pegs.get(0).setPosition(width/2, height/2+15);
     }, 3000);
