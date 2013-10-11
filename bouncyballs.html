@@ -10,21 +10,22 @@
   <script src="src/pegArray.js"></script>
 </head>
 <body>
-
-<div class="topbar">
-  <div class='groupLeft'>
-    <a href="#" class="lineup">Lineup</a>
-    <a href="#" class="clear">Clear</a>
+<div class="container">
+  <div class="topbar">
+    <div class='groupLeft'>
+      <a href="#" class="lineup">Lineup</a>
+      <a href="#" class="clear">Clear</a>
+    </div>
+    <span class='groupCenter'>Number of Balls: <span class='numBalls'>0</span></span>
+    <div class='groupRight'>
+      <a href="#" class="startStop">Stop</a>
+      Add balls: <input class="numAddBalls" type="text" size="2" value="10"></input>
+      <button type="button" class='addBalls'>Add Balls</button>
+    </div>
   </div>
-  <span class='groupCenter'>Number of Balls: <span class='numBalls'>0</span></span>
-  <div class='groupRight'>
-    <a href="#" class="startStop">Stop</a>
-    Add balls: <input class="numAddBalls" type="text" size="2" value="10"></input>
-    <button type="button" class='addBalls'>Add Balls</button>
-  </div>
+  <div class="main"></div>
 </div>
-<div class="main"></div>
-<!-- 
+<div class="mask"></div>
 <div class="popup">
   <ul>
     <li>Click and drag on empty white space to draw a peg.</li>
@@ -40,11 +41,12 @@
     <li>Esc to bring up this menu</li>
   </ul>
 </div>
- -->
+
 <script>
   var height = $('body').height();
   var width = $('body').width();
   var moving = false;
+  var popup = false;
 
   var distance = function(x1, y1, x2, y2) {
     return Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2));
@@ -130,54 +132,59 @@
     else startMoving();
   };
 
-    var mouseListener = function() {
-      var startX, startY, endX, endY;
-      var pegObj;
-      $('body').on('mousedown', '.peg', function() {
-        pegObj = this;
-        var pegIndex = $(this).data('index');
-        var peg = pegs.get(pegIndex);
-        startX = event.pageX;
-        startY = event.pageY;
-        $(this).on('mousemove', function(click) {
-          var displX = event.pageX - startX;
-          var displY = event.pageY - startY;
-          if(Math.abs(displX) > 5 || Math.abs(displY) > 5) {
-            debugger;
-            peg.setPosition(event.pageX, event.pageY);
-          }
-        });
-      });
-
-      $('body').on('mouseup', '.peg', function() {
-        clickPeg = false;
-        $(pegObj).off('mousemove');
-      });
-
-
-      // var startX, startY, endX, endY;
-      var drawPeg = false;
-      $('body').on('mousedown', ':not(.peg)', function(event) {
-        startX = event.pageX;
-        startY = event.pageY;
-        if(startY > 32) drawPeg = true;
-      });
-      $('body').on('mouseup', function(event) {
-        if(drawPeg) {
-          endX = event.pageX;
-          endY = event.pageY;
-          if((Math.abs(startX - endX) > 5 || Math.abs(startY - endY) > 5)) {
-            var newPeg = pegs.add(startX, startY, endX, endY);
-            $('body').append(newPeg);
-          } else {
-            explode(endX, endY);
-          }
-          drawPeg = false;
+  var mouseListener = function() {
+    var startX, startY, endX, endY;
+    var pegObj;
+    $('.container').on('mousedown', '.peg', function() {
+      pegObj = this;
+      var pegIndex = $(this).data('index');
+      var peg = pegs.get(pegIndex);
+      startX = event.pageX;
+      startY = event.pageY;
+      $(this).on('mousemove', function(click) {
+        var displX = event.pageX - startX;
+        var displY = event.pageY - startY;
+        if(Math.abs(displX) > 5 || Math.abs(displY) > 5) {
+          peg.setPosition(event.pageX, event.pageY);
         }
       });
-    };
+    });
+
+    $('.container').on('mouseup', '.peg', function() {
+      clickPeg = false;
+      $(pegObj).off('mousemove');
+    });
+
+    var drawPeg = false;
+    $('.container').on('mousedown', ':not(.peg)', function(event) {
+      startX = event.pageX;
+      startY = event.pageY;
+      if(startY > 32) drawPeg = true;
+    });
+    $('.container').on('mouseup', function(event) {
+      if(drawPeg) {
+        endX = event.pageX;
+        endY = event.pageY;
+        if((Math.abs(startX - endX) > 5 || Math.abs(startY - endY) > 5)) {
+          var newPeg = pegs.add(startX, startY, endX, endY);
+          $('.container').append(newPeg);
+        } else {
+          explode(endX, endY);
+        }
+        drawPeg = false;
+      }
+    });
+  };
+
+  var toggleHelp = function() {
+    $('.mask').toggle();
+    if(!popup) $('.popup').slideDown();
+    else $('.popup').slideUp();
+    popup = !popup;
+  };
 
   $(document).ready(function(){
+
     window.balls = [];
     window.pegs = new PegArr();
 
@@ -201,17 +208,28 @@
         var lastPegNode = pegs.lastNode();
         if(lastPegNode) lastPegNode.remove(); // ctrl + z or cmd + z
       }
+      if(e.which === 27) toggleHelp();
     });
 
+    $('.mask').hide();
+    $('.popup').hide();
     mouseListener();
 
-    $('body').append(pegs.add(width/2, height/2+15, width/2, height/2 + 150));
+    $('.container').append(pegs.add(width/2, height/2+15, width/2, height/2 + 150));
     addBalls(40);
     explode(width/2, height/2+150);
+    
     setTimeout(function() {
       pegs.get(0).setPosition(width/2, height/2+15);
     }, 3000);
 
+    $('body').on('click', function() {
+      if(popup) toggleHelp();
+    });
+
+    setTimeout(function() {
+      toggleHelp();
+    }, 3500);
 
   });
 </script>
