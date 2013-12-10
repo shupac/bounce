@@ -4,6 +4,7 @@ body, .container, .main, html{
   font-family: verdana;
   margin: 0px;
   font-size: 16px;
+  overflow: hidden;
 }
 
 .container {
