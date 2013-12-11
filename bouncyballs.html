@@ -43,6 +43,9 @@
 </div>
 
 <script>
+  var balls = [];
+  var pegs = new PegArr();
+
   var height = $('body').height();
   var width = $('body').width();
   var moving = false;
@@ -184,9 +187,6 @@
   };
 
   $(document).ready(function(){
-
-    window.balls = [];
-    window.pegs = new PegArr();
 
     $('.addBalls').on('click', function(){
       addBalls($('.numAddBalls').val());
