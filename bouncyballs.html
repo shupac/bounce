@@ -79,6 +79,10 @@
 
   var clearBalls = function() {
     $('.ball').remove();
+    for(var i = 0; i < balls.length; i++) {
+      balls[i].stopMoving();
+      delete balls[i];
+    }
     balls = [];
     $('.numBalls').text(balls.length);
   }
