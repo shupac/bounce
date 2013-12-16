@@ -8,3 +8,4 @@ Fun little project I made back in the day when I first learned JavaScript. It wa
 Interesting things discovered along the way:
 - Binding data and DOM
 - Complex DOM selection
+- Fixing memory leaks
